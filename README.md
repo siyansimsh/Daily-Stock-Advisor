@@ -359,6 +359,7 @@ python -m src.main generate-report
 ```powershell
 copy config\settings.example.yaml config\settings.yaml
 copy data\transactions.example.csv data\transactions.csv
+copy data\portfolio.example.csv data\portfolio.csv
 ```
 
 再依照自己的現金水位、風險參數與交易紀錄修改本機檔案。
