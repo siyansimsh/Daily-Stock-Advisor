@@ -1,5 +1,9 @@
 # Daily Stock Advisor
 
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE).
+
 Daily Stock Advisor 是一套本地端台股 / 美股投資決策輔助系統。它會根據使用者的交易流水帳、目前持倉、現金水位、股價資料、技術指標與風險條件，產生每日股票篩選結果、個人化建議、Markdown / HTML 報告，並提供 Streamlit Dashboard 讓使用者用網頁查看資料。
 
 本專案僅供個人研究、學習與投資決策輔助使用，不提供自動下單、券商 API 串接或代客交易功能。所有輸出僅供參考，實際交易須由使用者自行判斷並於券商平台手動執行。
