@@ -1,0 +1,12 @@
+{
+  "files.associations": {
+    "*.csv": "csv",
+    "*.yaml": "yaml",
+    "*.yml": "yaml"
+  },
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}"
+  ],
+  "verilog.linting.enabled": false,
+  "verilog.linting.linter": "none"
+}

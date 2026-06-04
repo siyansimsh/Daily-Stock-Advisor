@@ -1,0 +1,25 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+.env
+
+# Local user/private configuration and portfolio data.
+config/settings.yaml
+data/transactions.csv
+data/portfolio.csv
+data/recommendations.csv
+data/screener_result.csv
+
+data/prices/*.csv
+data/cache/*
+!data/prices/.gitkeep
+!data/cache/.gitkeep
+
+reports/*.md
+reports/*.html
+reports/*.pdf
+!reports/.gitkeep

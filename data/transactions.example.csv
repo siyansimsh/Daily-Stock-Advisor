@@ -1,0 +1,4 @@
+date,ticker,market,side,shares,price,fee,tax,currency,sector,note
+2026-06-04,2330.TW,TW,BUY,1000,600,0,0,TWD,semiconductor,台積電
+2026-06-04,AAPL,US,BUY,5,180,0,0,USD,technology,Apple
+2026-06-05,2330.TW,TW,SELL,200,620,0,0,TWD,semiconductor,台積電

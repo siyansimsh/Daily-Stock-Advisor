@@ -1,0 +1,19 @@
+ticker,market,name,sector
+SPY,US,SPDR S&P 500 ETF,ETF
+QQQ,US,Invesco QQQ ETF,ETF
+VTI,US,Vanguard Total Stock Market ETF,ETF
+VOO,US,Vanguard S&P 500 ETF,ETF
+AAPL,US,Apple,technology
+MSFT,US,Microsoft,technology
+NVDA,US,NVIDIA,semiconductor
+AMD,US,AMD,semiconductor
+GOOGL,US,Alphabet,technology
+META,US,Meta,technology
+AMZN,US,Amazon,consumer
+TSLA,US,Tesla,consumer
+AVGO,US,Broadcom,semiconductor
+TSM,US,TSMC ADR,semiconductor
+NFLX,US,Netflix,communication
+COST,US,Costco,consumer
+JPM,US,JPMorgan Chase,financial
+BRK-B,US,Berkshire Hathaway,financial

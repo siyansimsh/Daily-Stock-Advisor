@@ -1,0 +1,35 @@
+user:
+  base_currency: TWD
+  risk_profile: moderate
+  max_position_weight: 0.25
+  max_sector_weight: 0.40
+  stop_loss_pct: -0.10
+  take_profit_pct: 0.25
+  min_cash_ratio: 0.10
+
+fx:
+  USD_TWD: 32.0
+
+portfolio:
+  base_currency: TWD
+  cash_twd: 100000
+  cash_usd: 3000
+  default_tw_lot_size: 1
+  default_us_lot_size: 1
+
+market:
+  tw_index: "^TWII"
+  us_index: "SPY"
+  us_tech_index: "QQQ"
+
+screener:
+  min_volume_ratio: 1.0
+  rsi_lower: 45
+  rsi_upper: 70
+  min_20d_return: 0.0
+  min_60d_return: 0.0
+
+report:
+  output_format:
+    - markdown
+    - html
