@@ -162,13 +162,23 @@ Dashboard 只讀取本機資料檔案，不會修改資料、不會下單，也�
 
 ## Screenshots
 
-目前尚未放入正式截圖。若要做 GitHub 展示或履歷展示，可將圖片放在：
+### Dashboard
 
-```text
-docs/images/
-```
+![Dashboard](docs/images/dashboard.png)
 
-建議未來補上 Dashboard、Portfolio、Recommendations、Daily Report 等畫面截圖。
+### Portfolio
+
+![Portfolio](docs/images/portfolio.png)
+
+### Recommendations
+
+![Recommendations](docs/images/recommendations.png)
+
+### Daily Report
+
+![Daily Report](docs/images/daily_report.png)
+
+> 截圖中目前顯示之資產、持倉市值、台幣現金、美元現金等數字皆為 sample data，非真實資料。
 
 ## 主要輸入與輸出
 
