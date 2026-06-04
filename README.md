@@ -178,7 +178,7 @@ Dashboard 只讀取本機資料檔案，不會修改資料、不會下單，也�
 
 ![Daily Report](docs/images/daily_report.png)
 
-> 截圖中目前顯示之資產、持倉市值、台幣現金、美元現金等數字皆為 sample data，非真實資料。
+> 截圖中目前顯示之資產、持倉市值、台幣現金、美元現金等數字皆為範例資料（sample data），非真實資料。
 
 ## 主要輸入與輸出
 
