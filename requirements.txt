@@ -1,15 +1,5 @@
 pandas
-numpy
 yfinance
-matplotlib
-plotly
 streamlit
-ta
-scikit-learn
 PyYAML
-jinja2
-quantstats
-vectorbt
-backtrader
-python-dotenv
-pytest
+numpy

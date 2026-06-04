@@ -1,9 +1,5 @@
 # Daily Stock Advisor
 
-## License
-
-This project is licensed under the MIT License. See [LICENSE](LICENSE).
-
 Daily Stock Advisor 是一套本地端台股 / 美股投資決策輔助系統。它會根據使用者的交易流水帳、目前持倉、現金水位、股價資料、技術指標與風險條件，產生每日股票篩選結果、個人化建議、Markdown / HTML 報告，並提供 Streamlit Dashboard 讓使用者用網頁查看資料。
 
 本專案僅供個人研究、學習與投資決策輔助使用，不提供自動下單、券商 API 串接或代客交易功能。所有輸出僅供參考，實際交易須由使用者自行判斷並於券商平台手動執行。
@@ -61,8 +57,11 @@ config/settings.yaml
 | `fx.USD_TWD` | 美元兌台幣匯率 |
 | `portfolio.cash_twd` | 可用台幣現金 |
 | `portfolio.cash_usd` | 可用美元現金 |
-| `risk.stop_loss_pct` | 停損門檻 |
-| `risk.max_position_weight` | 單一持股最大權重 |
+| `user.risk_profile` | 使用者風險偏好 |
+| `user.stop_loss_pct` | 停損門檻 |
+| `user.max_position_weight` | 單一持股最大權重 |
+| `user.max_sector_weight` | 單一產業最大權重參考 |
+| `user.min_cash_ratio` | 最低現金水位參考 |
 | `screener.min_volume_ratio` | 量能條件門檻 |
 
 ### 3. 設定股票池
@@ -161,6 +160,16 @@ Dashboard 頁面包含：
 
 Dashboard 只讀取本機資料檔案，不會修改資料、不會下單，也不會連接券商。
 
+## Screenshots
+
+目前尚未放入正式截圖。若要做 GitHub 展示或履歷展示，可將圖片放在：
+
+```text
+docs/images/
+```
+
+建議未來補上 Dashboard、Portfolio、Recommendations、Daily Report 等畫面截圖。
+
 ## 主要輸入與輸出
 
 ```text
@@ -250,6 +259,9 @@ reports/YYYY-MM-DD_daily_report.html
 ## 專案結構
 
 ```text
+.github/
+  workflows/
+    tests.yml
 app/
   streamlit_app.py
 config/
@@ -260,6 +272,8 @@ data/
   transactions.example.csv
   portfolio.example.csv
   prices/
+docs/
+  images/
 reports/
 src/
   main.py
@@ -273,6 +287,12 @@ tests/
 ```
 
 ## 測試
+
+測試與開發環境建議安裝 dev requirements：
+
+```powershell
+python -m pip install -r requirements-dev.txt
+```
 
 執行完整測試：
 
@@ -293,7 +313,7 @@ python -m pytest
 通常是 VS Code 選到的 Python interpreter 沒有安裝 pytest。請執行：
 
 ```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
 ```
 
 然後在 VS Code 執行：
@@ -348,3 +368,7 @@ copy data\transactions.example.csv data\transactions.csv
 本系統僅作為個人研究、學習與投資決策輔助工具，不構成任何投資建議、招攬或保證獲利。股票投資具有市場風險，使用者應自行判斷並承擔投資結果。
 
 本專案不提供自動下單、券商 API 串接、代客交易或保證獲利功能。
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE).
