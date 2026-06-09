@@ -9,6 +9,7 @@ from typing import Any
 import pandas as pd
 
 from src.indicators import add_indicators
+from src.universe_provider import UNIVERSE_COLUMNS, normalize_universe
 
 
 RESULT_COLUMNS = [
@@ -38,29 +39,42 @@ class ScreenerPaths:
     config_dir: Path
     price_dir: Path
     output_path: Path
+    universe_dir: Path | None = None
 
 
 def load_universe(config_dir: str | Path) -> pd.DataFrame:
     """Read TW and US universe files and return one normalized table."""
 
+    return load_universe_from_sources(config_dir=config_dir, universe_dir=None)
+
+
+def load_universe_from_sources(config_dir: str | Path, universe_dir: str | Path | None = None) -> pd.DataFrame:
+    """Read generated universe cache first, falling back to config universe files."""
+
     config_path = Path(config_dir)
+    generated_path = Path(universe_dir) if universe_dir is not None else None
     frames = []
-    for filename in ("universe_tw.csv", "universe_us.csv"):
-        path = config_path / filename
-        if not path.exists():
+    for generated_name, config_name in (
+        ("universe_tw.csv", "universe_tw.csv"),
+        ("universe_us.csv", "universe_us.csv"),
+    ):
+        source_path = None
+        if generated_path is not None and (generated_path / generated_name).exists():
+            source_path = generated_path / generated_name
+        elif (config_path / config_name).exists():
+            source_path = config_path / config_name
+
+        if source_path is None:
             continue
-        data = pd.read_csv(path)
-        missing = {"ticker", "market", "name"} - set(data.columns)
-        if missing:
-            raise ValueError(f"{path} is missing required columns: {sorted(missing)}")
-        frames.append(data)
+
+        data = pd.read_csv(source_path)
+        if "ticker" not in data.columns:
+            raise ValueError(f"{source_path} must contain a ticker column")
+        frames.append(data.reindex(columns=UNIVERSE_COLUMNS))
 
     if not frames:
-        return pd.DataFrame(columns=["ticker", "market", "name"])
-
-    universe = pd.concat(frames, ignore_index=True)
-    universe["ticker"] = universe["ticker"].astype(str).str.strip()
-    return universe.loc[universe["ticker"] != ""].drop_duplicates(subset=["ticker"], keep="first")
+        return pd.DataFrame(columns=UNIVERSE_COLUMNS)
+    return normalize_universe(pd.concat(frames, ignore_index=True))
 
 
 def screen_universe(
@@ -69,7 +83,7 @@ def screen_universe(
 ) -> pd.DataFrame:
     """Screen all configured tickers and write the result CSV."""
 
-    universe = load_universe(paths.config_dir)
+    universe = load_universe_from_sources(paths.config_dir, paths.universe_dir)
     rows = [screen_ticker(record, settings, paths.price_dir) for record in _dataframe_records(universe)]
     result = pd.DataFrame(rows, columns=RESULT_COLUMNS)
     result = result.sort_values(["score", "ticker"], ascending=[False, True], ignore_index=True)

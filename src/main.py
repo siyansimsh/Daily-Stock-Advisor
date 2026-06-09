@@ -18,14 +18,16 @@ from src.data_providers import YFinanceProvider
 from src.portfolio import refresh_portfolio_current_prices
 from src.recommender import RecommendationPaths, generate_recommendations
 from src.report_generator import ReportPaths, generate_daily_report
-from src.screener import ScreenerPaths, screen_universe
+from src.screener import ScreenerPaths, load_universe_from_sources, screen_universe
 from src.transactions import build_portfolio_from_transactions, load_transactions
+from src.universe_provider import build_universe, save_universe
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 CONFIG_DIR = PROJECT_ROOT / "config"
 DATA_DIR = PROJECT_ROOT / "data"
 PRICE_DIR = DATA_DIR / "prices"
+UNIVERSE_DIR = DATA_DIR / "universe"
 REPORTS_DIR = PROJECT_ROOT / "reports"
 TRANSACTIONS_PATH = DATA_DIR / "transactions.csv"
 PORTFOLIO_PATH = DATA_DIR / "portfolio.csv"
@@ -132,8 +134,9 @@ def read_tickers_from_csv(path: Path) -> list[str]:
 
 def collect_default_tickers() -> list[str]:
     tickers: list[str] = []
-    tickers.extend(read_tickers_from_csv(CONFIG_DIR / "universe_tw.csv"))
-    tickers.extend(read_tickers_from_csv(CONFIG_DIR / "universe_us.csv"))
+    universe = load_universe_from_sources(CONFIG_DIR, UNIVERSE_DIR)
+    if "ticker" in universe.columns:
+        tickers.extend(universe["ticker"].dropna().astype(str).str.strip().loc[lambda values: values != ""].tolist())
     tickers.extend(read_tickers_from_csv(PORTFOLIO_PATH))
     return sorted(set(tickers))
 
@@ -160,7 +163,7 @@ def print_update_results(results: Iterable) -> None:
 
 
 def command_update_data(args: argparse.Namespace) -> int:
-    load_settings()
+    load_settings(CONFIG_DIR / "settings.yaml")
     tickers = args.tickers if args.tickers else collect_default_tickers()
     provider = YFinanceProvider(cache_dir=PRICE_DIR)
     results = provider.update_tickers(
@@ -194,14 +197,25 @@ def command_build_portfolio(args: argparse.Namespace) -> int:
     return 0
 
 
+def command_build_universe(args: argparse.Namespace) -> int:
+    settings = load_settings(CONFIG_DIR / "settings.yaml")
+    universes = build_universe(settings=settings, config_dir=CONFIG_DIR, data_dir=DATA_DIR)
+    tw_path = save_universe(universes["TW"], UNIVERSE_DIR / "universe_tw.csv")
+    us_path = save_universe(universes["US"], UNIVERSE_DIR / "universe_us.csv")
+    print(f"Wrote TW universe ({len(universes['TW'])}) to {tw_path}")
+    print(f"Wrote US universe ({len(universes['US'])}) to {us_path}")
+    return 0
+
+
 def command_screen(args: argparse.Namespace) -> int:
-    settings = load_settings()
+    settings = load_settings(CONFIG_DIR / "settings.yaml")
     result = screen_universe(
         settings=settings,
         paths=ScreenerPaths(
             config_dir=CONFIG_DIR,
             price_dir=PRICE_DIR,
             output_path=SCREENER_RESULT_PATH,
+            universe_dir=UNIVERSE_DIR,
         ),
     )
     if result.empty:
@@ -214,7 +228,7 @@ def command_screen(args: argparse.Namespace) -> int:
 
 
 def command_recommend(args: argparse.Namespace) -> int:
-    settings = load_settings()
+    settings = load_settings(CONFIG_DIR / "settings.yaml")
     result = generate_recommendations(
         settings=settings,
         paths=RecommendationPaths(
@@ -233,7 +247,7 @@ def command_recommend(args: argparse.Namespace) -> int:
 
 
 def command_generate_report(args: argparse.Namespace) -> int:
-    settings = load_settings()
+    settings = load_settings(CONFIG_DIR / "settings.yaml")
     result = generate_daily_report(
         settings=settings,
         paths=ReportPaths(
@@ -262,6 +276,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     build_portfolio = subparsers.add_parser("build-portfolio", help="Build portfolio.csv from transactions.csv")
     build_portfolio.set_defaults(func=command_build_portfolio)
+
+    build_universe_parser = subparsers.add_parser(
+        "build-universe",
+        help="Build generated TW/US universe CSVs from config, watchlist, and portfolio",
+    )
+    build_universe_parser.set_defaults(func=command_build_universe)
 
     screen = subparsers.add_parser("screen", help="Run rule-based stock screener")
     screen.set_defaults(func=command_screen)
