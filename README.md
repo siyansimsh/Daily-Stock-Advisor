@@ -117,6 +117,7 @@ date,ticker,market,side,shares,price,fee,tax,currency,sector,note
 
 ```powershell
 python -m src.main build-portfolio
+python -m src.main build-universe
 python -m src.main update-data --force
 python -m src.main screen
 python -m src.main recommend
@@ -128,6 +129,7 @@ python -m src.main generate-report
 | 指令 | 功能 |
 |---|---|
 | `build-portfolio` | 由 `transactions.csv` 產生 `portfolio.csv` |
+| `build-universe` | 合併預設股票池、watchlist 與持倉，產生本機 universe 快取 |
 | `update-data --force` | 更新台股 / 美股價格資料 |
 | `screen` | 產生 rule-based 股票篩選結果 |
 | `recommend` | 產生個人化建議 |
@@ -187,10 +189,16 @@ config/settings.yaml
 config/settings.example.yaml
 config/universe_tw.csv
 config/universe_us.csv
+config/watchlist_tw.csv
+config/watchlist_tw.example.csv
+config/watchlist_us.csv
+config/watchlist_us.example.csv
 data/transactions.csv
 data/transactions.example.csv
 data/portfolio.csv
 data/portfolio.example.csv
+data/universe/universe_tw.csv
+data/universe/universe_us.csv
 data/prices/{ticker}.csv
 data/screener_result.csv
 data/recommendations.csv
@@ -213,6 +221,49 @@ reports/YYYY-MM-DD_daily_report.html
 | `current_price` | 最新價格，可由 `update-data` 更新 |
 | `sector` | 產業分類 |
 | `note` | 備註，可作為報告顯示名稱的備援來源 |
+
+## 股票池與 Watchlist
+
+預設股票池位於：
+
+```text
+config/universe_tw.csv
+config/universe_us.csv
+```
+
+使用者可以新增本機自訂關注清單：
+
+```powershell
+copy config\watchlist_tw.example.csv config\watchlist_tw.csv
+copy config\watchlist_us.example.csv config\watchlist_us.csv
+```
+
+`config/watchlist_*.csv` 不會提交到 GitHub，適合放個人的關注標的。欄位格式與 `config/universe_*.csv` 相同：
+
+```csv
+ticker,market,name,sector
+```
+
+執行：
+
+```powershell
+python -m src.main build-universe
+```
+
+系統會合併：
+
+* `config/universe_*.csv`：預設股票池
+* `config/watchlist_*.csv`：本機自訂關注清單
+* `data/portfolio.csv`：目前持倉
+
+並輸出本機快取：
+
+```text
+data/universe/universe_tw.csv
+data/universe/universe_us.csv
+```
+
+`data/universe/*.csv` 是自動產生的本機快取，不會上傳 GitHub。若不執行 `build-universe`，系統仍會 fallback 使用 `config/universe_*.csv`。
 
 ## recommendations.csv
 
@@ -278,9 +329,12 @@ config/
   settings.example.yaml
   universe_tw.csv
   universe_us.csv
+  watchlist_tw.example.csv
+  watchlist_us.example.csv
 data/
   transactions.example.csv
   portfolio.example.csv
+  universe/
   prices/
 docs/
   images/
@@ -354,6 +408,7 @@ Developer: Reload Window
 
 ```powershell
 python -m src.main build-portfolio
+python -m src.main build-universe
 python -m src.main update-data --force
 python -m src.main screen
 python -m src.main recommend

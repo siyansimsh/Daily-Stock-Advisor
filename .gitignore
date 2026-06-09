@@ -9,14 +9,18 @@ __pycache__/
 
 # Local user/private configuration and portfolio data.
 config/settings.yaml
+config/watchlist_tw.csv
+config/watchlist_us.csv
 data/transactions.csv
 data/portfolio.csv
 data/recommendations.csv
 data/screener_result.csv
 
 data/prices/*.csv
+data/universe/*.csv
 data/cache/*
 !data/prices/.gitkeep
+!data/universe/.gitkeep
 !data/cache/.gitkeep
 
 reports/*.md
